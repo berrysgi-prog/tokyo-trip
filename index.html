@@ -1,0 +1,761 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>도쿄 3박 4일</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+/* Layout: 밤하늘 남색 히어로 + 요약 카드 → 섹션 칩(+편집 버튼) → 일차 탭 타임라인 → 맛집·쇼핑 → 쇼핑 리스트 → 준비물 → 교통·예약 */
+:root{
+  --bg:#f6f4f1; --surface:#ffffff; --fg:#1d2233; --muted:#6a6f80; --line:#e6e2dc;
+  --night:#17203a; --night-fg:#f4f1ea; --night-muted:#b9bfd3; --gold:#f2b84b;
+  --tower:#e2502b; --tower-soft:#fde6de; --tower-ink:#b33a1a;
+  --sky:#e2ecf8; --sky-ink:#2f5d94;
+  --matcha:#e3efe4; --matcha-ink:#2f6b45;
+  --sakura:#f9e3ea; --sakura-ink:#a3385d;
+  --yuzu:#fbf0d2; --yuzu-ink:#8a6410;
+  --warn:#fbe4d6; --warn-ink:#a2491b;
+  --shade:rgba(15,20,35,.45);
+  --display:"Gowun Batang", "Noto Serif KR", serif;
+  --body:"Noto Sans KR", system-ui, -apple-system, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12151f; --surface:#1b1f2c; --fg:#ebe8e2; --muted:#a3a7b6; --line:#2d3244;
+  --night:#0c1020; --night-fg:#f4f1ea; --night-muted:#a9b0c6; --gold:#f2b84b;
+  --tower:#f0714f; --tower-soft:#3a2420; --tower-ink:#ffab92;
+  --sky:#1f2c40; --sky-ink:#9cc2f0;
+  --matcha:#1d3027; --matcha-ink:#93d3aa;
+  --sakura:#3a2230; --sakura-ink:#f3a9c3;
+  --yuzu:#352d17; --yuzu-ink:#f0cf7a;
+  --warn:#3a2618; --warn-ink:#f5b38c;
+  --shade:rgba(0,0,0,.6);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#12151f; --surface:#1b1f2c; --fg:#ebe8e2; --muted:#a3a7b6; --line:#2d3244;
+  --night:#0c1020; --night-fg:#f4f1ea; --night-muted:#a9b0c6; --gold:#f2b84b;
+  --tower:#f0714f; --tower-soft:#3a2420; --tower-ink:#ffab92;
+  --sky:#1f2c40; --sky-ink:#9cc2f0;
+  --matcha:#1d3027; --matcha-ink:#93d3aa;
+  --sakura:#3a2230; --sakura-ink:#f3a9c3;
+  --yuzu:#352d17; --yuzu-ink:#f0cf7a;
+  --warn:#3a2618; --warn-ink:#f5b38c;
+  --shade:rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:980px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+a{color:inherit}
+h1,h2,h3{text-wrap:balance}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--tower);outline-offset:2px}
+
+/* hero */
+.hero{background:var(--night);color:var(--night-fg);padding-block:40px 32px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:6px;background:linear-gradient(90deg,var(--tower) 0 25%,var(--gold) 25% 50%,#6fa3d8 50% 75%,#d77fa1 75%)}
+.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--gold);font-weight:700}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(38px,8vw,60px);line-height:1.15;margin:8px 0 6px}
+.hero .sub{color:var(--night-muted);margin:0 0 24px}
+.hero .sub b{color:var(--gold)}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.card{background:var(--surface);color:var(--fg);border-radius:12px;padding:14px 16px;border-top:4px solid var(--c,var(--tower));min-width:0}
+.card .k{font-size:12px;font-weight:700;color:var(--c,var(--tower))}
+.card .v{font-weight:700;font-size:16px;margin-top:4px;line-height:1.35}
+.card .s{font-size:12.5px;color:var(--muted);margin-top:4px}
+
+/* section nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.nav .wrap{display:flex;gap:8px;padding-block:10px;align-items:center}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
+.chip{flex:none;text-decoration:none;font-size:14px;font-weight:500;padding:6px 14px;border-radius:999px;background:var(--bg-c);color:var(--ink-c)}
+.editbtn{flex:none;border:0;border-radius:999px;padding:7px 16px;font-weight:700;font-size:14px;background:var(--fg);color:var(--bg)}
+body.editing .editbtn{background:var(--tower);color:#fff}
+
+section{padding-block:40px 8px;scroll-margin-top:60px}
+section h2{font-family:var(--display);font-size:28px;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 20px;max-width:62ch}
+.editonly{display:none !important}
+body.editing .editonly{display:revert !important}
+.hint{display:none;margin:0 0 16px;padding:10px 14px;border-radius:10px;background:var(--yuzu);color:var(--yuzu-ink);font-size:13.5px}
+body.editing .hint{display:block}
+
+/* day tabs */
+.tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.tab{border:0;border-radius:12px;padding:12px 6px;background:var(--bg-c);color:var(--ink-c);line-height:1.3}
+.tab b{display:block;font-size:16px}
+.tab span{font-size:12px;opacity:.85}
+.tab[aria-selected="true"]{background:var(--ink-c);color:var(--surface)}
+
+.day{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.day-h{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--ink-c);color:var(--surface)}
+.day-h .n{font-family:var(--display);font-size:28px;font-weight:700;line-height:1}
+.day-h h3{margin:0;font-size:18px;min-width:0}
+.day-h .d{font-size:13px;opacity:.85;margin-left:4px;font-weight:400}
+.day-h .badge{margin-left:auto;font-size:12px;font-weight:700;background:var(--surface);color:var(--ink-c);padding:3px 10px;border-radius:999px;flex:none}
+.day-h .ic{background:var(--surface);color:var(--ink-c)}
+.note{margin:14px 18px 0;padding:10px 14px;border-radius:10px;background:var(--warn);color:var(--warn-ink);font-size:13.5px}
+.note.after{margin:0 18px 14px}
+.items{list-style:none;margin:0;padding:6px 18px 10px}
+.it{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:14px;padding:14px 0;border-bottom:1px dashed var(--line)}
+.it:last-child{border-bottom:0}
+.t{align-self:start;font-size:13px;font-weight:700;color:var(--ink-c);background:var(--bg-c);border-radius:6px;padding:3px 6px;text-align:center;font-variant-numeric:tabular-nums}
+.it h4{margin:0;font-size:15.5px;font-weight:700;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.it h4 a{text-decoration-color:var(--line);text-underline-offset:3px;color:var(--ink-c)}
+.it p{margin:4px 0 0;color:var(--muted);font-size:14px;white-space:pre-line}
+.tag{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--yuzu);color:var(--yuzu-ink)}
+.tag.red{background:var(--tower-soft);color:var(--tower-ink)}
+.tag.blue{background:var(--sky);color:var(--sky-ink)}
+.tag.green{background:var(--matcha);color:var(--matcha-ink)}
+.tag.gray{background:var(--line);color:var(--muted)}
+.tip{display:inline-block;margin-top:6px;font-size:13px;color:var(--fg);background:var(--bg);border-radius:8px;padding:6px 10px}
+.ic{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:8px;padding:2px 9px;font-size:12.5px;align-self:start;white-space:nowrap}
+.addrow{border:1.5px dashed color-mix(in srgb,var(--ink-c) 45%,transparent);background:transparent;color:var(--ink-c);border-radius:10px;padding:9px 14px;font-weight:700;font-size:14px;width:100%}
+.day .addrow{margin:0 0 14px}
+.day .addwrap{padding:0 18px}
+.empty{color:var(--muted);font-size:14px;padding:18px;text-align:center}
+
+.d1{--bg-c:var(--tower-soft);--ink-c:var(--tower-ink)}
+.d2{--bg-c:var(--sakura);--ink-c:var(--sakura-ink)}
+.d3{--bg-c:var(--sky);--ink-c:var(--sky-ink)}
+.d4{--bg-c:var(--matcha);--ink-c:var(--matcha-ink)}
+.dall{--bg-c:var(--yuzu);--ink-c:var(--yuzu-ink)}
+
+/* places */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.box{border-radius:14px;padding:16px 18px;background:var(--bg-c);min-width:0}
+.box h3{margin:0 0 6px;font-size:16px;color:var(--ink-c);padding-bottom:8px;border-bottom:1px solid color-mix(in srgb,var(--ink-c) 30%,transparent)}
+.pl{list-style:none;margin:0 0 10px;padding:0}
+.pl li{padding:10px 0;border-bottom:1px solid color-mix(in srgb,var(--ink-c) 15%,transparent);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.pl li:last-child{border-bottom:0}
+.pl .nm{font-weight:700;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pl .map{font-size:11.5px;font-weight:700;color:var(--ink-c);border:1px solid var(--ink-c);border-radius:999px;padding:0 8px;text-decoration:none}
+.pl .meta{font-size:12.5px;color:var(--muted)}
+.pl .ds{font-size:13.5px;margin-top:2px}
+
+/* shopping */
+.shop-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:16px}
+.seg{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--muted);border-radius:999px;padding:5px 12px;font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--sakura);color:var(--sakura-ink);font-weight:700}
+.shop-count{color:var(--muted);font-size:13.5px;font-variant-numeric:tabular-nums}
+.primary{border:0;background:var(--sakura-ink);color:var(--surface);border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px;margin-left:auto}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.sitem{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.sitem .ph{aspect-ratio:4/3;background:var(--sakura);display:grid;place-items:center;color:var(--sakura-ink);font-family:var(--display);font-size:26px;overflow:hidden;border:0;padding:0;width:100%}
+.sitem .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.sitem .bd{padding:12px 14px;display:grid;gap:3px;flex:1}
+.sitem .nm{font-weight:700;line-height:1.35}
+.sitem .meta{font-size:12.5px;color:var(--muted)}
+.sitem .ds{font-size:13.5px;white-space:pre-line}
+.sitem .ft{display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid var(--line)}
+.sitem .ft label{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:500;cursor:pointer}
+.sitem .ft input{width:18px;height:18px;accent-color:var(--matcha-ink)}
+.sitem .ft .ic{margin-left:auto}
+.sitem.done .nm{text-decoration:line-through;opacity:.6}
+.sitem.done .ph{filter:grayscale(.7);opacity:.7}
+.who{font-size:11.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--sky);color:var(--sky-ink);margin-left:4px}
+.suggest{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.suggest button{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:5px 12px;font-size:13.5px}
+.emptybox{background:var(--surface);border:1.5px dashed var(--line);border-radius:14px;padding:26px 18px;text-align:center;color:var(--muted)}
+
+/* checklist */
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.bar{flex:1;height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--sakura-ink);transition:width .3s}
+.count{font-weight:700;font-variant-numeric:tabular-nums}
+.reset{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:999px;padding:4px 12px;font-size:13px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ck{list-style:none;margin:0 0 10px;padding:0}
+.ck li{padding:6px 0;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.ck label{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px;cursor:pointer;align-items:start}
+.ck input{width:18px;height:18px;margin:3px 0 0;accent-color:var(--ink-c)}
+.ck small{display:block;color:var(--muted);font-size:12.5px}
+.ck input:checked + span{text-decoration:line-through;opacity:.6}
+
+/* table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+th{background:var(--sky);color:var(--sky-ink);text-align:left;font-size:12.5px;padding:10px 14px}
+td{padding:11px 14px;border-top:1px solid var(--line);vertical-align:top}
+td:first-child{white-space:nowrap;font-weight:500}
+.st{font-size:12px;font-weight:700;padding:2px 9px;border-radius:999px;white-space:nowrap}
+.st.ok{background:var(--matcha);color:var(--matcha-ink)}
+.st.need{background:var(--warn);color:var(--warn-ink)}
+.st.site{background:var(--yuzu);color:var(--yuzu-ink)}
+.info{margin-top:14px}
+.info ul{margin:0;padding-left:18px;font-size:14px}
+.info li{margin:4px 0}
+
+/* dialog */
+dialog{border:0;border-radius:16px;padding:0;width:min(520px,calc(100vw - 32px));max-height:calc(100dvh - 48px);background:var(--surface);color:var(--fg);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:var(--shade)}
+.dlg-h{padding:16px 20px;border-bottom:1px solid var(--line);font-weight:700;font-size:17px;font-family:var(--display)}
+.dlg-b{padding:16px 20px;display:grid;gap:14px;overflow-y:auto}
+.dlg-f{padding:12px 20px 16px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fld{display:grid;gap:5px}
+.fld>span{font-size:13px;font-weight:700;color:var(--muted)}
+.fld input[type=text],.fld textarea,.fld select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;background:var(--bg);color:var(--fg);font:inherit;font-size:15px}
+.fld textarea{min-height:84px;resize:vertical}
+.fld small{color:var(--muted);font-size:12px}
+.tagrow{display:grid;grid-template-columns:minmax(0,1fr) 110px auto;gap:6px}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:8px 14px;font-size:14px}
+.btn.save{background:var(--fg);color:var(--bg);border-color:var(--fg);font-weight:700;margin-left:auto}
+.btn.del{color:var(--tower-ink);border-color:color-mix(in srgb,var(--tower-ink) 40%,transparent)}
+.btn.del.confirm{background:var(--tower);color:#fff;border-color:var(--tower)}
+.imgpick{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.imgpick .pv{width:84px;height:84px;border-radius:10px;background:var(--bg);border:1px solid var(--line);overflow:hidden;display:grid;place-items:center;color:var(--muted);font-size:12px;flex:none}
+.imgpick .pv img{width:100%;height:100%;object-fit:cover}
+.err{color:var(--tower-ink);font-size:13px}
+.viewer{width:min(720px,calc(100vw - 32px))}
+.viewer img{display:block;width:100%;height:auto;max-height:80dvh;object-fit:contain;background:#000}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:20;max-width:calc(100vw - 32px)}
+.status{font-size:13px;color:var(--muted);margin:-8px 0 14px}
+
+footer{padding-block:32px 48px;color:var(--muted);font-size:12.5px}
+footer ul{padding-left:18px;margin:6px 0 0}
+footer a{color:var(--muted)}
+
+@media (max-width:760px){
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .tabs{gap:6px}
+  .tab b{font-size:14px}
+  .it{grid-template-columns:62px minmax(0,1fr) auto;gap:10px}
+  .sgrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .sitem .bd{padding:10px 12px}
+  .primary{margin-left:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">TOKYO · 2026.12.05 – 12.08</div>
+    <h1>도쿄 3박 4일</h1>
+    <p class="sub">동생이랑 둘이 가는 도쿄 여행 · <span id="dday">출발까지 <b>D-29</b></span></p>
+    <div class="cards">
+      <div class="card" style="--c:var(--tower)"><div class="k">일정</div><div class="v">12.5(토) – 12.8(화)</div><div class="s">3박 4일 · 2명</div></div>
+      <div class="card" style="--c:var(--sakura-ink)"><div class="k">숙소</div><div class="v">더 스퀘어 호텔 긴자</div><div class="s">긴자 2-11-6 · 긴자잇초메역 근처</div></div>
+      <div class="card" style="--c:var(--sky-ink)"><div class="k">체크인 / 체크아웃</div><div class="v">15:00 / 11:00</div><div class="s">도착일엔 짐 먼저 맡기기</div></div>
+      <div class="card" style="--c:var(--matcha-ink)"><div class="k">항공</div><div class="v">OZ102 · KE712</div><div class="s">인천 T2 ↔ 나리타 T1</div></div>
+    </div>
+  </div>
+</header>
+
+<nav class="nav" aria-label="섹션">
+  <div class="wrap">
+    <div class="chips">
+      <a class="chip d1" href="#plan">일정</a>
+      <a class="chip d2" href="#places">맛집·쇼핑</a>
+      <a class="chip dall" href="#shop">쇼핑 리스트</a>
+      <a class="chip d3" href="#pack">준비물</a>
+      <a class="chip d4" href="#booking">교통·예약</a>
+    </div>
+    <button class="editbtn" id="editbtn" type="button" hidden aria-pressed="false">편집하기</button>
+  </div>
+</nav>
+
+<main class="wrap">
+<section id="plan">
+  <h2>날짜별 일정</h2>
+  <p class="lead">트래블 맵모리 앱에 정해 둔 장소를 기준으로 영업시간과 이동 시간을 맞춰 짰어요. 장소 이름을 누르면 구글맵이 열려요.</p>
+  <p class="hint">편집 중이에요. 일정마다 '수정'을 누르거나 날짜 아래 '+ 일정 추가'로 넣으세요. 시간 순서대로 자동 정렬돼요.</p>
+  <p class="status" id="status" hidden></p>
+  <div class="tabs" role="tablist" aria-label="일차 선택">
+    <button class="tab d1" role="tab" type="button" data-day="1" aria-selected="true"><b>1일차</b><span>12.5 토</span></button>
+    <button class="tab d2" role="tab" type="button" data-day="2" aria-selected="false"><b>2일차</b><span>12.6 일</span></button>
+    <button class="tab d3" role="tab" type="button" data-day="3" aria-selected="false"><b>3일차</b><span>12.7 월</span></button>
+    <button class="tab d4" role="tab" type="button" data-day="4" aria-selected="false"><b>4일차</b><span>12.8 화</span></button>
+    <button class="tab dall" role="tab" type="button" data-day="all" aria-selected="false"><b>전체</b><span>한눈에</span></button>
+  </div>
+  <div id="days"><div class="day"><p class="empty" id="plan-empty">일정을 불러오는 중이에요…</p></div></div>
+</section>
+
+<section id="places">
+  <h2>맛집 · 쇼핑</h2>
+  <p class="lead">앱에 담아 둔 곳이에요. 이름 옆 '지도'를 누르면 구글맵이 열려요.</p>
+  <div class="grid2">
+    <div class="box d1"><h3>먹을 곳</h3><ul class="pl" id="pl-food"><li class="empty">불러오는 중…</li></ul><button class="addrow editonly" type="button" data-add-place="food">+ 먹을 곳 추가</button></div>
+    <div class="box d3"><h3>쇼핑</h3><ul class="pl" id="pl-shop"><li class="empty">불러오는 중…</li></ul><button class="addrow editonly" type="button" data-add-place="shop">+ 쇼핑 장소 추가</button></div>
+  </div>
+</section>
+
+<section id="shop">
+  <h2>쇼핑 리스트</h2>
+  <p class="lead">사고 싶은 걸 사진이랑 같이 담아 두세요. '샀어요'를 체크하면 둘 다 바로 보여서 같은 걸 두 번 사지 않아요.</p>
+  <div class="shop-bar">
+    <div class="seg" role="group" aria-label="보기">
+      <button type="button" data-filter="all" aria-pressed="true">전체</button>
+      <button type="button" data-filter="todo" aria-pressed="false">살 것</button>
+      <button type="button" data-filter="done" aria-pressed="false">샀어요</button>
+    </div>
+    <span class="shop-count" id="shop-count"></span>
+    <button class="primary" id="shop-add" type="button" hidden>+ 사고 싶은 것 추가</button>
+  </div>
+  <div id="shop-list"><div class="emptybox">쇼핑 리스트를 불러오는 중이에요…</div></div>
+</section>
+
+<section id="pack">
+  <h2>준비물</h2>
+  <p class="lead">목록은 함께 고칠 수 있고, 체크 표시는 각자 휴대폰에만 저장돼요.</p>
+  <div class="progress"><div class="bar"><i id="bar"></i></div><span class="count" id="count">0 / 0</span><button class="reset" id="reset" type="button">체크 초기화</button></div>
+  <div class="grid3">
+    <div class="box d1"><h3>꼭 챙기기</h3><ul class="ck" id="ck-must"></ul><button class="addrow editonly" type="button" data-add-pack="must">+ 추가</button></div>
+    <div class="box d3"><h3>예매·앱</h3><ul class="ck" id="ck-book"></ul><button class="addrow editonly" type="button" data-add-pack="book">+ 추가</button></div>
+    <div class="box d2"><h3>옷 · 생활</h3><ul class="ck" id="ck-wear"></ul><button class="addrow editonly" type="button" data-add-pack="wear">+ 추가</button></div>
+  </div>
+</section>
+
+<section id="booking">
+  <h2>교통 · 예약 현황</h2>
+  <p class="lead">남은 예약은 시부야 스카이 하나예요. 11월 22일에 예약하면 2일차 시부야 스카이 일정의 태그를 '예약 완료'로 바꿔 두세요.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>항목</th><th>내용</th><th>상태</th></tr></thead>
+    <tbody>
+      <tr><td>가는 편</td><td>12/5 OZ102 · 인천 T2 09:00 → 나리타 T1 11:20</td><td><span class="st ok">앱 등록</span></td></tr>
+      <tr><td>오는 편</td><td>12/8 KE712 · 나리타 T1 17:10 → 인천 T2 19:55</td><td><span class="st ok">앱 등록</span></td></tr>
+      <tr><td>숙소</td><td>더 스퀘어 호텔 긴자 · 3박 · 체크인 15:00 / 체크아웃 11:00</td><td><span class="st ok">앱 등록</span></td></tr>
+      <tr><td>디즈니씨</td><td>12/7 1데이 패스포트 · 성인 10,900엔</td><td><span class="st ok">예약 완료</span></td></tr>
+      <tr><td>시부야 스카이</td><td>12/6 15:30~16:00 입장 · 성인 온라인 3,400엔 · 11/22 예약 오픈</td><td><span class="st need">예약 예정</span></td></tr>
+      <tr><td>스카이트리</td><td>12/7 밤 · 밖에서 보기</td><td><span class="st site">무료</span></td></tr>
+      <tr><td>도쿄타워</td><td>메인 데크 1,500엔</td><td><span class="st site">현장</span></td></tr>
+      <tr><td>공항 ↔ 시내</td><td>저가버스 TYO-NRT · 갈 때 나리타 T1 → 긴자역, 올 때 도쿄역 야에스 남쪽 → T1 · 각 1,500엔</td><td><span class="st site">예약 없음</span></td></tr>
+    </tbody>
+  </table></div>
+  <div class="grid2 info">
+    <div class="box d1"><h3>공항 ↔ 호텔</h3><ul>
+      <li>호텔에서 가까운 역: 긴자잇초메(유라쿠초선), 히가시긴자(아사쿠사선·히비야선)</li>
+      <li>저가버스 TYO-NRT 1,500엔, 예약 없이 타고 교통카드·현금 결제(차 안에서 신용카드 X)</li>
+      <li>갈 때: 나리타 T1 7번 승강장 → 긴자역 하차, 약 75~80분</li>
+      <li>올 때: 도쿄역 야에스 남쪽 출구 7·8번 → T1, 약 70분</li>
+      <li><b>교통패스는 안 사요.</b> 일정상 지하철(메트로·도에이) 요금이 4일 합쳐 1인 약 1,300엔이라 72시간권(2,000엔)보다 싸요. 교통카드(Suica·PASMO)에 충전해서 타기</li>
+    </ul></div>
+    <div class="box d3"><h3>12월 초 도쿄</h3><ul>
+      <li>낮 12°C 안팎, 아침·밤 5°C 안팎. 맑고 건조한 날이 많아요</li>
+      <li>해 지는 시간 16:30쯤. 야경은 17시부터 볼 수 있어요</li>
+      <li>12월은 긴자·시오도메·오모테산도에 크리스마스 조명이 있어요</li>
+    </ul></div>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">
+  정보 확인일 2026년 11월 5일. 영업시간·가격은 바뀔 수 있으니 가기 전에 한 번 더 확인해 주세요.
+  <ul>
+    <li><a href="https://www.tokyodisneyresort.jp/en/tds/daily/calendar/20261207/" target="_blank" rel="noopener">도쿄 디즈니씨 12/7 운영 정보</a></li>
+    <li><a href="https://www.gotokyo.org/en/spot/1749/index.html" target="_blank" rel="noopener">GO TOKYO · 시부야 스카이</a></li>
+    <li><a href="https://tyo-nrt.com/wp/wp-content/themes/tyo-nrt/files/timetable_new_horizon.pdf" target="_blank" rel="noopener">에어포트버스 TYO-NRT 시간표</a></li>
+    <li><a href="https://en.tokyotower.co.jp/fee/" target="_blank" rel="noopener">도쿄타워 요금</a> · <a href="https://www.tokyometro.jp/kr/ticket/travel" target="_blank" rel="noopener">도쿄 서브웨이 티켓</a></li>
+    <li><a href="https://us.trip.com/hotels/tokyo-hotel-detail-21434381/the-square-hotel-ginza/" target="_blank" rel="noopener">더 스퀘어 호텔 긴자 (Trip.com)</a></li>
+  </ul>
+</footer>
+
+<dialog id="dlg"><form method="dialog" id="dlg-form"><div class="dlg-h" id="dlg-title"></div><div class="dlg-b" id="dlg-body"></div><div class="dlg-f" id="dlg-foot"></div></form></dialog>
+<dialog id="codedlg"><form id="code-form"><div class="dlg-h">여행 코드 입력</div><div class="dlg-b"><label class="fld"><span>편집하려면 둘만 아는 여행 코드를 넣어 주세요. 이 휴대폰에서는 한 번만 넣으면 돼요.</span><input type="text" id="code-in" autocomplete="off"></label><div class="err" id="code-err" role="alert"></div></div><div class="dlg-f"><button type="button" class="btn" id="code-cancel">취소</button><button type="submit" class="btn save">확인</button></div></form></dialog>
+<dialog id="viewer" class="viewer"><form method="dialog"><img id="viewer-img" alt=""><div class="dlg-f"><span id="viewer-cap" style="font-weight:700"></span><button class="btn save" value="close">닫기</button></div></form></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var LS_TAB='tokyo-trip-tab', LS_CK='tokyo-trip-check';
+  function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
+  function lsSet(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  function $(id){return document.getElementById(id)}
+  function h(tag,attrs){
+    var el=document.createElement(tag);
+    if(attrs) for(var k in attrs){
+      var v=attrs[k]; if(v==null||v===false) continue;
+      if(k==='text') el.textContent=v;
+      else if(k==='class') el.className=v;
+      else if(k.slice(0,2)==='on') el.addEventListener(k.slice(2),v);
+      else el.setAttribute(k,v===true?'':v);
+    }
+    for(var i=2;i<arguments.length;i++){var c=arguments[i]; if(c==null||c===false) continue; if(Array.isArray(c)) c.forEach(function(x){x&&el.appendChild(typeof x==='string'?document.createTextNode(x):x)}); else el.appendChild(typeof c==='string'?document.createTextNode(c):c)}
+    return el;
+  }
+  function mapUrl(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)}
+  function mins(t){var m=/(\d{1,2}):(\d{2})/.exec(t||'');return m?(+m[1])*60+(+m[2]):null}
+  function byOrder(a,b){return (a.order||0)-(b.order||0)||String(a.title||a.name||'').localeCompare(String(b.title||b.name||''))}
+  var TONES=[['yellow','노랑'],['red','빨강'],['blue','파랑'],['green','초록'],['gray','회색']];
+
+  var toastT;
+  function toast(msg){var t=$('toast'); if(!t){t=h('div',{id:'toast',class:'toast',role:'status'});document.body.appendChild(t)} t.textContent=msg; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(function(){t.hidden=true},2600)}
+
+  // D-day
+  var start=new Date(2026,11,5), now=new Date(); now.setHours(0,0,0,0);
+  var diff=Math.round((start-now)/86400000), dd=$('dday');
+  if(diff>0) dd.innerHTML='출발까지 <b>D-'+diff+'</b>'; else if(diff>-4) dd.innerHTML='<b>여행 '+(1-diff)+'일차</b>'; else dd.innerHTML='<b>다녀왔어요</b>';
+
+  var S={days:{},items:[],places:[],packing:[],shopping:[],loaded:{},canWrite:false,editing:false,db:null,assets:null,filter:'all',tab:'1'};
+
+  // ---------- tabs ----------
+  var tabs=[].slice.call(document.querySelectorAll('.tab'));
+  function showTab(d){S.tab=d; tabs.forEach(function(t){t.setAttribute('aria-selected',String(t.dataset.day===d))}); [].forEach.call(document.querySelectorAll('#days .day[data-day]'),function(a){a.hidden=!(d==='all'||a.dataset.day===d)}); lsSet(LS_TAB,d)}
+  tabs.forEach(function(t){t.addEventListener('click',function(){showTab(t.dataset.day)})});
+  S.tab=lsGet(LS_TAB)||'1'; if(diff<=0&&diff>-4) S.tab=String(1-diff);
+  showTab(S.tab);
+
+  // ---------- render: plan ----------
+  var DAYDEF=[{n:1,cls:'d1'},{n:2,cls:'d2'},{n:3,cls:'d3'},{n:4,cls:'d4'}];
+  function editBtn(fn,label){return h('button',{type:'button',class:'ic editonly',onclick:fn},label||'수정')}
+  function tagEls(tags){return (tags||[]).filter(function(t){return t&&t.t}).map(function(t){return h('span',{class:'tag '+(t.tone||'yellow'),text:t.t})})}
+  function renderPlan(){
+    var box=$('days'); box.textContent='';
+    if(!S.loaded.items||!S.loaded.days){box.appendChild(h('div',{class:'day'},h('p',{class:'empty',text:S.slow?'일정을 아직 불러오지 못했어요. 인터넷 연결을 확인해 주세요.':'일정을 불러오는 중이에요…'})));return}
+    DAYDEF.forEach(function(D){
+      var d=S.days['d'+D.n]||{}, list=S.items.filter(function(x){return +x.day===D.n}).sort(byOrder);
+      var art=h('article',{class:'day '+D.cls,'data-day':String(D.n)},
+        h('div',{class:'day-h'},h('span',{class:'n',text:String(D.n)}),h('h3',null,d.title||(D.n+'일차'),' ',h('span',{class:'d',text:d.date||''})),d.badge?h('span',{class:'badge',text:d.badge}):null,editBtn(function(){editDay(D.n)},'제목 수정')),
+        d.note?h('p',{class:'note',text:d.note}):null,
+        h('ul',{class:'items'},list.length?list.map(function(x){
+          return h('li',{class:'it'},h('span',{class:'t',text:x.time||'-'}),
+            h('div',null,h('h4',null,x.mapq?h('a',{href:mapUrl(x.mapq),target:'_blank',rel:'noopener',text:(x.title||'')+' ↗'}):(x.title||''),tagEls(x.tags)),x.desc?h('p',{text:x.desc}):null,x.tip?h('span',{class:'tip',text:x.tip}):null),
+            editBtn(function(){editItem(x,D.n)}));
+        }):[h('li',{class:'empty',text:'아직 일정이 없어요.'})]),
+        h('div',{class:'addwrap editonly'},h('button',{type:'button',class:'addrow',onclick:function(){editItem(null,D.n)}},'+ '+D.n+'일차 일정 추가')),
+        d.after?h('p',{class:'note after',text:d.after}):null
+      );
+      box.appendChild(art);
+    });
+    showTab(S.tab);
+  }
+
+  // ---------- render: places ----------
+  function renderPlaces(){
+    ['food','shop'].forEach(function(kind){
+      var ul=$('pl-'+kind); ul.textContent='';
+      if(!S.loaded.places){ul.appendChild(h('li',{class:'empty',text:S.slow?'불러오지 못했어요.':'불러오는 중…'}));return}
+      var list=S.places.filter(function(p){return p.kind===kind}).sort(byOrder);
+      if(!list.length){ul.appendChild(h('li',{class:'empty',text:'아직 없어요.'}));return}
+      list.forEach(function(p){
+        ul.appendChild(h('li',null,h('div',null,
+          h('div',{class:'nm'},p.name||'',p.mapq?h('a',{class:'map',href:mapUrl(p.mapq),target:'_blank',rel:'noopener'},'지도'):null),
+          p.meta?h('div',{class:'meta',text:p.meta}):null,p.desc?h('div',{class:'ds',text:p.desc}):null),
+          editBtn(function(){editPlace(p,kind)})));
+      });
+    });
+  }
+
+  // ---------- render: packing ----------
+  var checks={}; try{checks=JSON.parse(lsGet(LS_CK)||'{}')||{}}catch(e){checks={}}
+  function renderPacking(){
+    ['must','book','wear'].forEach(function(g){
+      var ul=$('ck-'+g); ul.textContent='';
+      if(!S.loaded.packing){ul.appendChild(h('li',{class:'empty',text:S.slow?'불러오지 못했어요.':'불러오는 중…'}));return}
+      S.packing.filter(function(k){return k.group===g}).sort(byOrder).forEach(function(k){
+        var cb=h('input',{type:'checkbox',id:'ck-'+k.id});
+        cb.checked=!!checks[k.id];
+        cb.addEventListener('change',function(){checks[k.id]=cb.checked;lsSet(LS_CK,JSON.stringify(checks));updateCount()});
+        ul.appendChild(h('li',null,h('label',null,cb,h('span',null,k.name||'',k.sub?h('small',{text:k.sub}):null)),editBtn(function(){editPack(k,g)})));
+      });
+    });
+    updateCount();
+  }
+  function updateCount(){
+    var ids=S.packing.map(function(k){return k.id}), n=ids.filter(function(id){return checks[id]}).length;
+    $('count').textContent=n+' / '+ids.length; $('bar').style.width=(ids.length?n/ids.length*100:0)+'%';
+  }
+  $('reset').addEventListener('click',function(){checks={};lsSet(LS_CK,'{}');renderPacking()});
+
+  // ---------- render: shopping ----------
+  var SUGGEST=[['이모켄피','이모야킨지로'],['문구','이토야 긴자 본점'],['과자·간식','오케이 긴자점'],['캐릭터 굿즈','키디랜드'],['생활잡화','핸즈 긴자점'],['옷','유니클로 TOKYO · GU']];
+  [].forEach.call(document.querySelectorAll('.seg button'),function(b){b.addEventListener('click',function(){S.filter=b.dataset.filter;[].forEach.call(document.querySelectorAll('.seg button'),function(x){x.setAttribute('aria-pressed',String(x===b))});renderShopping()})});
+  $('shop-add').addEventListener('click',function(){ensureCode().then(function(ok){ok&&editShop(null)})});
+  function renderShopping(){
+    var box=$('shop-list'); box.textContent='';
+    $('shop-add').hidden=!S.canWrite;
+    if(!S.loaded.shopping){box.appendChild(h('div',{class:'emptybox',text:S.slow?'쇼핑 리스트를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.':'쇼핑 리스트를 불러오는 중이에요…'}));$('shop-count').textContent='';return}
+    var all=S.shopping.slice().sort(function(a,b){return (a.bought?1:0)-(b.bought?1:0)||(a.createdAt||0)-(b.createdAt||0)});
+    var done=all.filter(function(s){return s.bought}).length;
+    $('shop-count').textContent=all.length?('샀어요 '+done+' / '+all.length):'';
+    if(!all.length){
+      box.appendChild(h('div',{class:'emptybox'},
+        h('div',{text:'아직 담은 게 없어요.'}),
+        h('div',{text:'자주 사는 것부터 눌러서 바로 담아 보세요. 사진은 추가할 때 넣을 수 있어요.'}),
+        S.canWrite?h('div',{class:'suggest'},SUGGEST.map(function(s){return h('button',{type:'button',onclick:function(){ensureCode().then(function(ok){ok&&editShop(null,{name:s[0],where:s[1]})})}},s[0]+' · '+s[1])})):null));
+      return;
+    }
+    var list=all.filter(function(s){return S.filter==='all'||(S.filter==='done'?s.bought:!s.bought)});
+    if(!list.length){box.appendChild(h('div',{class:'emptybox',text:S.filter==='done'?'아직 산 게 없어요.':'다 샀어요!'}));return}
+    var grid=h('div',{class:'sgrid'});
+    list.forEach(function(s){
+      var ph=s.imageId?h('button',{type:'button',class:'ph','aria-label':(s.name||'')+' 사진 크게 보기',onclick:function(){openViewer(s)}},h('img',{src:imgUrl(s.imageId),alt:s.name||'',loading:'lazy',onerror:function(){this.replaceWith(document.createTextNode('사진 없음'))}})):h('div',{class:'ph','aria-hidden':'true',text:(s.name||'?').slice(0,1)});
+      var cb=h('input',{type:'checkbox',id:'sb-'+s.id,disabled:!S.canWrite});
+      cb.checked=!!s.bought;
+      cb.addEventListener('change',function(){write(S.db.collection('shopping').doc(s.id).update({bought:cb.checked}),function(){cb.checked=!cb.checked})});
+      grid.appendChild(h('div',{class:'sitem'+(s.bought?' done':'')},ph,
+        h('div',{class:'bd'},h('div',{class:'nm'},s.name||'',s.who?h('span',{class:'who',text:s.who}):null),
+          (s.where||s.price)?h('div',{class:'meta',text:[s.where,s.price].filter(Boolean).join(' · ')}):null,
+          s.note?h('div',{class:'ds',text:s.note}):null),
+        h('div',{class:'ft'},h('label',null,cb,'샀어요'),S.canWrite?h('button',{type:'button',class:'ic',onclick:function(){editShop(s)}},'수정'):null)));
+    });
+    box.appendChild(grid);
+  }
+  function openViewer(s){$('viewer-img').src=imgUrl(s.imageId);$('viewer-img').alt=s.name||'';$('viewer-cap').textContent=s.name||'';$('viewer').showModal()}
+
+  function renderAll(){renderPlan();renderPlaces();renderPacking();renderShopping()}
+
+  // ---------- writes ----------
+  function write(p,onFail){
+    return p.then(function(){return true},function(e){
+      var c=e&&e.code;
+      if(c==='cancelled'){}
+      else if(c==='bad_code'){lsSet(CODE_KEY,'');toast('여행 코드가 맞지 않아요. 다시 입력해 주세요.')}
+      else if(c==='quota_exceeded') toast('저장 공간이 꽉 찼어요.');
+      else toast('저장하지 못했어요. 잠시 후 다시 해 주세요.');
+      onFail&&onFail(); return false;
+    });
+  }
+  function applyWriteUI(){
+    $('editbtn').hidden=!S.canWrite;
+    if(!S.canWrite&&S.editing) setEditing(false);
+    renderShopping();
+  }
+  function setEditing(on){S.editing=on;document.body.classList.toggle('editing',on);$('editbtn').textContent=on?'편집 끝내기':'편집하기';$('editbtn').setAttribute('aria-pressed',String(on))}
+  $('editbtn').addEventListener('click',function(){if(S.editing){setEditing(false);return} ensureCode().then(function(ok){ok&&setEditing(true)})});
+
+  // ---------- dialog ----------
+  var dlg=$('dlg');
+  function openForm(title,fields,values,onSave,onDelete){
+    $('dlg-title').textContent=title;
+    var body=$('dlg-body'),foot=$('dlg-foot'); body.textContent=''; foot.textContent='';
+    var getters={}, err=h('div',{class:'err',role:'alert'});
+    fields.forEach(function(f){
+      var v=values&&values[f.key], id='f-'+f.key;
+      if(f.type==='textarea'){var ta=h('textarea',{id:id}); ta.value=v||''; getters[f.key]=function(){return ta.value.trim()}; body.appendChild(h('label',{class:'fld'},h('span',{text:f.label}),ta,f.help?h('small',{text:f.help}):null))}
+      else if(f.type==='select'){var se=h('select',{id:id},f.options.map(function(o){return h('option',{value:o[0],text:o[1]})})); se.value=v||f.options[0][0]; getters[f.key]=function(){return se.value}; body.appendChild(h('label',{class:'fld'},h('span',{text:f.label}),se))}
+      else if(f.type==='tags'){
+        var wrap=h('div',{style:'display:grid;gap:6px'}),rows=[];
+        function addRow(t){var ti=h('input',{type:'text',placeholder:'예) 예약 필요'}); ti.value=(t&&t.t)||''; var ts=h('select',{'aria-label':'태그 색'},TONES.map(function(o){return h('option',{value:o[0],text:o[1]})})); ts.value=(t&&t.tone)||'yellow'; var r={ti:ti,ts:ts}; var row=h('div',{class:'tagrow'},ti,ts,h('button',{type:'button',class:'btn',onclick:function(){rows.splice(rows.indexOf(r),1);row.remove()}},'빼기')); rows.push(r); wrap.appendChild(row)}
+        (v||[]).forEach(addRow);
+        getters[f.key]=function(){return rows.map(function(r){return {t:r.ti.value.trim(),tone:r.ts.value}}).filter(function(t){return t.t})};
+        body.appendChild(h('div',{class:'fld'},h('span',{text:f.label}),wrap,h('button',{type:'button',class:'btn',style:'justify-self:start',onclick:function(){addRow(null)}},'+ 태그')));
+      }
+      else if(f.type==='image'){
+        var cur=v||null, file=null, pv=h('div',{class:'pv'});
+        function showPv(src){pv.textContent=''; if(src) pv.appendChild(h('img',{src:src,alt:'미리보기'})); else pv.appendChild(document.createTextNode('사진 없음'))}
+        showPv(cur?imgUrl(cur):null);
+        var fi=h('input',{type:'file',accept:'image/*',id:id,style:'max-width:100%'});
+        fi.addEventListener('change',function(){file=fi.files&&fi.files[0]||null; if(file){showPv(URL.createObjectURL(file))}});
+        var rm=h('button',{type:'button',class:'btn',onclick:function(){cur=null;file=null;fi.value='';showPv(null)}},'사진 빼기');
+        getters[f.key]=function(){return {cur:cur,file:file}};
+        body.appendChild(h('div',{class:'fld'},h('span',{text:f.label}),S.assets?h('div',{class:'imgpick'},pv,h('div',{style:'display:grid;gap:6px;min-width:0'},fi,rm)):h('small',{text:'사진을 올릴 수 없어요.'})));
+      }
+      else {var inp=h('input',{type:'text',id:id,placeholder:f.ph||''}); inp.value=v||''; getters[f.key]=function(){return inp.value.trim()}; body.appendChild(h('label',{class:'fld'},h('span',{text:f.label+(f.required?' *':'')}),inp,f.help?h('small',{text:f.help}):null))}
+    });
+    body.appendChild(err);
+    if(onDelete){var del=h('button',{type:'button',class:'btn del'},'삭제'),armed=false; del.addEventListener('click',function(){if(!armed){armed=true;del.classList.add('confirm');del.textContent='정말 삭제';return} busy(true); onDelete().then(function(ok){busy(false); if(ok){dlg.close();toast('삭제했어요')}})}); foot.appendChild(del)}
+    foot.appendChild(h('button',{type:'button',class:'btn',onclick:function(){dlg.close()}},'취소'));
+    var save=h('button',{type:'submit',class:'btn save'},'저장');
+    foot.appendChild(save);
+    function busy(b){[].forEach.call(foot.querySelectorAll('button'),function(x){x.disabled=b}); save.textContent=b?'저장 중…':'저장'}
+    $('dlg-form').onsubmit=function(ev){
+      ev.preventDefault(); err.textContent='';
+      var out={}; for(var k in getters) out[k]=getters[k]();
+      for(var i=0;i<fields.length;i++){if(fields[i].required&&!out[fields[i].key]){err.textContent=fields[i].label+'을(를) 적어 주세요.';return}}
+      busy(true);
+      Promise.resolve(onSave(out,err)).then(function(ok){busy(false); if(ok){dlg.close();toast('저장했어요')}},function(){busy(false)});
+    };
+    dlg.showModal();
+    var first=body.querySelector('input[type=text],textarea'); first&&first.focus();
+  }
+
+  // ---------- editors ----------
+  function editDay(n){
+    var d=S.days['d'+n]||{};
+    openForm(n+'일차 제목·메모 수정',[
+      {key:'title',label:'제목',required:true},{key:'date',label:'날짜 표시',ph:'12월 5일 토요일'},{key:'badge',label:'오른쪽 배지',ph:'확정 / 제안'},
+      {key:'note',label:'위쪽 메모',type:'textarea'},{key:'after',label:'아래쪽 메모',type:'textarea'}],d,
+      function(o){o.n=n;return write(S.db.collection('days').doc('d'+n).set(o))});
+  }
+  function editItem(x,day){
+    var vals=x?x:{day:String(day)};
+    openForm(x?'일정 수정':day+'일차 일정 추가',[
+      {key:'day',label:'날짜',type:'select',options:[['1','1일차 · 12/5 토'],['2','2일차 · 12/6 일'],['3','3일차 · 12/7 월'],['4','4일차 · 12/8 화']]},
+      {key:'time',label:'시간',ph:'14:30',help:'시간 순서대로 자동 정렬돼요. ~14:00, 점심 같은 표기도 돼요.'},
+      {key:'title',label:'할 일 · 장소',required:true},
+      {key:'mapq',label:'지도 검색어',ph:'가게 이름 (일본어로 쓰면 더 정확해요)',help:'적으면 제목에 구글맵 링크가 붙어요.'},
+      {key:'desc',label:'설명',type:'textarea'},{key:'tip',label:'팁 한 줄'},{key:'tags',label:'태그',type:'tags'}],
+      Object.assign({},vals,{day:String(vals.day)}),
+      function(o){
+        var m=mins(o.time); var data={day:+o.day,time:o.time,title:o.title,mapq:o.mapq,desc:o.desc,tip:o.tip,tags:o.tags,order:m!=null?m:(x&&x.order!=null&&+x.day===+o.day?x.order:1500)};
+        var col=S.db.collection('items'); return write(x?col.doc(x.id).set(data):col.add(data));
+      },
+      x?function(){return write(S.db.collection('items').doc(x.id).delete())}:null);
+  }
+  function nextOrder(list){return list.reduce(function(m,a){return Math.max(m,a.order||0)},0)+10}
+  function editPlace(p,kind){
+    openForm(p?'장소 수정':(kind==='food'?'먹을 곳 추가':'쇼핑 장소 추가'),[
+      {key:'kind',label:'분류',type:'select',options:[['food','먹을 곳'],['shop','쇼핑']]},
+      {key:'name',label:'이름',required:true},{key:'meta',label:'위치 · 영업시간 · 며칠째',ph:'긴자 2-7-15 · 10:00~20:00 · 4일차'},
+      {key:'desc',label:'메모',type:'textarea'},{key:'mapq',label:'지도 검색어',ph:'가게 이름 (일본어 추천)'}],
+      p||{kind:kind},
+      function(o){var data=Object.assign({},o,{order:p?p.order:nextOrder(S.places.filter(function(a){return a.kind===o.kind}))}); var col=S.db.collection('places'); return write(p?col.doc(p.id).set(data):col.add(data))},
+      p?function(){return write(S.db.collection('places').doc(p.id).delete())}:null);
+  }
+  function editPack(k,g){
+    openForm(k?'준비물 수정':'준비물 추가',[
+      {key:'group',label:'묶음',type:'select',options:[['must','꼭 챙기기'],['book','예매·앱'],['wear','옷 · 생활']]},
+      {key:'name',label:'준비물',required:true},{key:'sub',label:'작은 메모'}],
+      k||{group:g},
+      function(o){var data=Object.assign({},o,{order:k?k.order:nextOrder(S.packing.filter(function(a){return a.group===o.group}))}); var col=S.db.collection('packing'); return write(k?col.doc(k.id).set(data):col.add(data))},
+      k?function(){return write(S.db.collection('packing').doc(k.id).delete())}:null);
+  }
+  function shrink(file){
+    return new Promise(function(res){
+      if(!/^image\/(jpeg|png|webp)$/.test(file.type)){res(file);return}
+      var url=URL.createObjectURL(file), img=new Image();
+      img.onload=function(){var max=1600,w=img.naturalWidth,hh=img.naturalHeight,s=Math.min(1,max/Math.max(w,hh)); if(s===1&&file.size<1500000){URL.revokeObjectURL(url);res(file);return}
+        var c=document.createElement('canvas'); c.width=Math.round(w*s); c.height=Math.round(hh*s); c.getContext('2d').drawImage(img,0,0,c.width,c.height); URL.revokeObjectURL(url);
+        c.toBlob(function(b){res(b||file)},'image/jpeg',0.85)};
+      img.onerror=function(){URL.revokeObjectURL(url);res(file)};
+      img.src=url;
+    });
+  }
+  function editShop(s,preset){
+    openForm(s?'쇼핑 리스트 수정':'사고 싶은 것 추가',[
+      {key:'name',label:'뭘 살까요',required:true,ph:'예) 이모켄피'},
+      {key:'image',label:'사진',type:'image'},
+      {key:'where',label:'어디서',ph:'예) 이모야킨지로 · 4일차'},
+      {key:'price',label:'가격 · 예산',ph:'예) 1,000엔 안팎'},
+      {key:'who',label:'누구 거',ph:'예) 엄마 선물, 같이, 나'},
+      {key:'note',label:'메모',type:'textarea'}],
+      s?Object.assign({},s,{image:s.imageId||null}):(preset||{}),
+      function(o,err){
+        var im=o.image||{cur:s&&s.imageId||null,file:null};
+        var p=Promise.resolve(im.cur||null);
+        if(im.file&&S.assets){p=shrink(im.file).then(function(b){return S.assets.upload(b,b.type?undefined:{type:'image/jpeg'})}).then(function(r){return r.id})}
+        return p.then(function(imageId){
+          var data={name:o.name,where:o.where,price:o.price,who:o.who,note:o.note,imageId:imageId||null,bought:s?!!s.bought:false,createdAt:s&&s.createdAt?s.createdAt:Date.now()};
+          var col=S.db.collection('shopping'); return write(s?col.doc(s.id).set(data):col.add(data));
+        },function(e){
+          var c=e&&e.code; if(c==='cancelled') return false; err.textContent=c==='too_large'?'사진이 너무 커요(20MB 이하).':c==='unsupported_type'?'이 형식의 사진은 못 올려요. JPG나 PNG로 해 주세요.':'사진을 올리지 못했어요. 다시 해 주세요.'; return false;
+        });
+      },
+      s?function(){return write(S.db.collection('shopping').doc(s.id).delete())}:null);
+  }
+
+  // ---------- Supabase ----------
+  var CODE_KEY='tokyo-trip-code';
+  function getCode(){return lsGet(CODE_KEY)||''}
+  function imgUrl(v){if(!v) return ''; if(v.indexOf('sb:')===0) return S.sb?S.sb.storage.from('photos').getPublicUrl(v.slice(3)).data.publicUrl:''; return v}
+  function ensureCode(){
+    if(getCode()) return Promise.resolve(true);
+    if(!S.sb){toast('아직 연결 설정이 안 됐어요.');return Promise.resolve(false)}
+    return new Promise(function(res){
+      var d=$('codedlg'),inp=$('code-in'),er=$('code-err'),done=false;
+      function fin(v){if(done) return; done=true; res(v)}
+      inp.value=''; er.textContent='';
+      d.onclose=function(){fin(false)};
+      $('code-cancel').onclick=function(){d.close()};
+      $('code-form').onsubmit=function(ev){
+        ev.preventDefault(); var c=inp.value.trim(); if(!c){er.textContent='코드를 적어 주세요.';return}
+        er.textContent='확인 중…';
+        S.sb.rpc('check_code',{p_code:c}).then(function(r){
+          if(r.error){er.textContent='확인하지 못했어요. 인터넷 연결을 확인해 주세요.';return}
+          if(r.data===true){lsSet(CODE_KEY,c);fin(true);d.close();toast('이제 편집할 수 있어요')} else er.textContent='코드가 맞지 않아요.';
+        });
+      };
+      d.showModal(); inp.focus();
+    });
+  }
+  var cache={},listeners={},COLLS=['days','items','places','packing','shopping'];
+  function emit(c){
+    var o=cache[c]||{}, snap={metadata:{fromCache:false},docs:Object.keys(o).map(function(id){var d=o[id];return {id:id,data:function(){return d}}})};
+    (listeners[c]||[]).forEach(function(l){l.next(snap)});
+  }
+  function fail(code){var e=new Error(code);e.code=code;return e}
+  function save(c,id,d){
+    return ensureCode().then(function(ok){
+      if(!ok) throw fail('cancelled');
+      return S.sb.rpc('save_doc',{p_code:getCode(),p_coll:c,p_id:id,p_data:d});
+    }).then(function(r){
+      if(r.error) throw fail(/bad_code/.test(r.error.message||'')?'bad_code':'unavailable');
+      (cache[c]=cache[c]||{})[id]=d; emit(c);
+    });
+  }
+  function del(c,id){
+    return ensureCode().then(function(ok){
+      if(!ok) throw fail('cancelled');
+      return S.sb.rpc('delete_doc',{p_code:getCode(),p_coll:c,p_id:id});
+    }).then(function(r){
+      if(r.error) throw fail(/bad_code/.test(r.error.message||'')?'bad_code':'unavailable');
+      if(cache[c]) delete cache[c][id]; emit(c);
+    });
+  }
+  function newId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,10)}
+  var DB={collection:function(c){
+    var col={
+      onSnapshot:function(next,error){(listeners[c]=listeners[c]||[]).push({next:next,error:error});return function(){}},
+      doc:function(id){id=id||newId();return {id:id,
+        set:function(d){return save(c,id,d)},
+        update:function(d){return save(c,id,Object.assign({},(cache[c]||{})[id],d))},
+        delete:function(){return del(c,id)}}},
+      add:function(d){var r=col.doc();return r.set(d).then(function(){return r})}
+    };
+    return col;
+  }};
+  function loadAll(){
+    return S.sb.from('trip_docs').select('coll,id,data').limit(5000).then(function(r){
+      if(r.error) throw r.error;
+      var nc={}; r.data.forEach(function(x){(nc[x.coll]=nc[x.coll]||{})[x.id]=x.data});
+      cache=nc; COLLS.forEach(emit);
+    });
+  }
+  function showStatus(t){$('status').hidden=!t;$('status').textContent=t||''}
+
+  // ---------- boot ----------
+  function boot(){
+    var cfg=window.TRIP_CONFIG||{};
+    if(!window.supabase||!cfg.url||!cfg.key||/여기에/.test(cfg.url+cfg.key)){S.slow=true;renderAll();showStatus('아직 연결 설정이 안 됐어요. config.js에 Supabase 주소와 키를 넣어 주세요.');return}
+    S.sb=window.supabase.createClient(cfg.url,cfg.key);
+    S.db=DB; S.canWrite=true;
+    S.assets={upload:function(blob){
+      return ensureCode().then(function(ok){
+        if(!ok) throw fail('cancelled');
+        var path='shop/'+newId()+(blob.type==='image/png'?'.png':blob.type==='image/webp'?'.webp':'.jpg');
+        return S.sb.storage.from('photos').upload(path,blob,{contentType:blob.type||'image/jpeg'}).then(function(r){
+          if(r.error) throw fail(/size|large|exceed/i.test(r.error.message||'')?'too_large':/mime|type/i.test(r.error.message||'')?'unsupported_type':'upstream_error');
+          return {id:'sb:'+path};
+        });
+      });
+    }};
+    applyWriteUI();
+    var timer=setTimeout(function(){S.slow=true;renderAll()},10000);
+    function sub(name,apply,render){
+      DB.collection(name).onSnapshot(function(snap){
+        apply(snap.docs.map(function(d){return Object.assign({id:d.id},d.data())}));
+        S.loaded[name]=true; clearTimeout(timer); render();
+      });
+    }
+    sub('days',function(rows){S.days={};rows.forEach(function(r){S.days[r.id]=r})},renderPlan);
+    sub('items',function(rows){S.items=rows},renderPlan);
+    sub('places',function(rows){S.places=rows},renderPlaces);
+    sub('packing',function(rows){S.packing=rows},renderPacking);
+    sub('shopping',function(rows){S.shopping=rows},renderShopping);
+    loadAll().then(function(){showStatus('')},function(){S.slow=true;renderAll();showStatus('일정을 불러오지 못했어요. 인터넷 연결을 확인하고 새로고침해 주세요.')});
+    S.sb.channel('trip').on('postgres_changes',{event:'*',schema:'public',table:'trip_docs'},function(p){
+      if(p.eventType==='DELETE'){var o=p.old||{}; if(o.coll&&cache[o.coll]){delete cache[o.coll][o.id];emit(o.coll)}}
+      else {var n=p.new||{}; if(n.coll){(cache[n.coll]=cache[n.coll]||{})[n.id]=n.data;emit(n.coll)}}
+    }).subscribe();
+    document.addEventListener('visibilitychange',function(){if(!document.hidden) loadAll().catch(function(){})});
+  }
+  renderAll();
+  boot();
+})();
+</script>
+
+</body>
+</html>
